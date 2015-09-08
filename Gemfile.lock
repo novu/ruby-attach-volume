@@ -1,0 +1,33 @@
+PATH
+  remote: .
+  specs:
+    AWSAttachVolume (0.1.0)
+      aws-sdk (~> 2.0)
+      methadone
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    aws-sdk (2.1.19)
+      aws-sdk-resources (= 2.1.19)
+    aws-sdk-core (2.1.19)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.1.19)
+      aws-sdk-core (= 2.1.19)
+    jmespath (1.0.2)
+      multi_json (~> 1.0)
+    methadone (1.9.1)
+      bundler
+    multi_json (1.11.2)
+    rake (10.4.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  AWSAttachVolume!
+  bundler (~> 1.10)
+  rake (~> 10.0)
+
+BUNDLED WITH
+   1.10.3

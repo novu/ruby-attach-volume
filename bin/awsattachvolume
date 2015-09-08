@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require 'methadone'
+require 'AWSAttachVolume'
+
+class App
+  include Methadone::Main
+  include Methadone::CLILogging
+
+  main do |action|
+    AWSAttachVolume::Main.new(options).run
+  end
+
+  options[:region] = 'us-east-1'
+
+  # Proxy to an OptionParser instance's on method
+  on("-r REGION", "--region")
+  on("-v VOLUME_ID", "--volume_id")
+  on("-i INSTANCE_ID","--instance_id")
+  on("-d DEVICE"<"--device")
+
+  use_log_level_option
+
+  go!
+end
