@@ -1,8 +1,6 @@
 # AWSAttachVolume
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/AWSAttachVolume`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Use this gem to attach an existing volume to an instance.  It will verify the volume is in the available state and the same region before attaching.  Instance will need IAM permissions to describe the volume and attach the volume.
 
 ## Installation
 
@@ -22,7 +20,19 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+Usage: awsattachvolume [options]
+
+Options:
+    -h, --help                       Show command line help
+    -r, --region REGION              (default: us-east-1)
+    -v, --volume_id VOLUME_ID
+    -i, --instance_id INSTANCE_ID
+    -d, --device DEVICE
+        --log-level LEVEL            Set the logging level
+                                     (debug|info|warn|error|fatal)
+                                     (Default: info)
+```
 
 ## Development
 
