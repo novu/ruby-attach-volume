@@ -4,6 +4,7 @@ require 'net/http'
 module AWSAttachVolume
   class Main
     include Methadone::CLILogging
+    include Methadone::ExitNow
 
     def initialize(options={})
       @client = Aws::EC2::Client.new(region: options[:region])
@@ -21,17 +22,18 @@ module AWSAttachVolume
     def run()
       volume_available(@client, @volume_id, @instance_az)
 
-      resp = client.attach_volume({
-                                      volume_id: [@volume_id],
+      info "Attaching volume #{@volume_id} to instance #{@instance_id} as device #{@device}."
+      resp = @client.attach_volume({
+                                      volume_id: @volume_id,
                                       instance_id: @instance_id,
                                       device: @device
                                   })
-      info "Attaching volume #{@volume_id} to instance #{@instance_id}"
       while(!File.exist?(@device))
+        count = 0
         count += 1
         if count >= 60
           fatal "Mount timed out."
-          exit_now!("-1")
+          exit_now!(-1)
         end
       end
     end
@@ -45,7 +47,7 @@ module AWSAttachVolume
 
     def instance_az()
       metadata_endpoint = 'http://169.254.169.254/latest/meta-data/'
-      availability_zone = Net::HTTP.get( URI.parse( metadata_endpoint + 'availability_zone' ) )
+      availability_zone = Net::HTTP.get( URI.parse( metadata_endpoint + 'placement/availability-zone' ) )
       info "Instance AZ: #{availability_zone}"
       return availability_zone
     end
@@ -58,12 +60,12 @@ module AWSAttachVolume
       volume_az = resp.volumes[0].availability_zone
       if volume_az != az
         fatal "Volume and instance not in the same Availability Zone. Volume: #{volume_az} Instance: #{az}"
-        exit_now!("-1")
+        exit_now!(-1)
       end
-      state = resp.volumes[0].attachments[0].state
-      if state != 'detached'
+      state = resp.volumes[0].state
+      if state != 'available'
         fatal "Volume not detached! Current state: #{state}"
-        exit_now!("-1")
+        exit_now!(-1)
       end
       return true
     end

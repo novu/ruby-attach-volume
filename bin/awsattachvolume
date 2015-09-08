@@ -6,8 +6,12 @@ require 'AWSAttachVolume'
 class App
   include Methadone::Main
   include Methadone::CLILogging
+  include Methadone::ExitNow
 
   main do |action|
+    if options[:device].nil? || options[:volume_id].nil?
+      help_now!("Missing required argument!")
+    end
     AWSAttachVolume::Main.new(options).run
   end
 
@@ -15,9 +19,9 @@ class App
 
   # Proxy to an OptionParser instance's on method
   on("-r REGION", "--region")
-  on("-v VOLUME_ID", "--volume_id")
-  on("-i INSTANCE_ID","--instance_id")
-  on("-d DEVICE"<"--device")
+  on("-v VOLUME_ID", "--volume_id", "Required")
+  on("-i INSTANCE_ID","--instance_id", "Required")
+  on("-d DEVICE", "--device")
 
   use_log_level_option
 
