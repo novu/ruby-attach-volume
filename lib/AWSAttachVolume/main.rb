@@ -55,6 +55,10 @@ module AWSAttachVolume
       end
     end
 
+    def validate()
+
+    end
+
     def instance_id()
       metadata_endpoint = 'http://169.254.169.254/latest/meta-data/'
       instance_id = Net::HTTP.get( URI.parse( metadata_endpoint + 'instance-id' ) )
@@ -87,7 +91,6 @@ module AWSAttachVolume
       unless @volume.tags.nil? || @volume.tags == ''
         info "Tagging snapshot."
         snapshot.create_tags({
-                                 dry_run: true,
                                  tags: @volume.tags
                              })
       end
@@ -102,7 +105,6 @@ module AWSAttachVolume
       unless @volume.tags.nil? || @volume.tags == ''
         info "Tagging volume."
         new_volume.create_tags({
-                                   dry_run: true,
                                    tags: @volume.tags
                                })
       end
