@@ -36,7 +36,7 @@ module AWSAttachVolume
       end
 
       if need_move && @move
-        # 'Move' the volume and return the id as the new volume_id
+        info "Volume not in the same Availability Zone, moving."
         move_volume
       end
 
@@ -78,28 +78,40 @@ module AWSAttachVolume
 
     def move_volume()
       # Snapshot volume and restore to current az.  Delete old volume & snapshot.
+      info "Creating snapshot."
       snapshot = @volume.create_snapshot({
                                              description: 'AWSAttachVolume temp for moving volume'
                                          })
       snapshot.wait_until_completed
-      snapshot.create_tags({
-                             dry_run: true,
-                             tags: @volume.tags
-                         }) unless @volume.tags.nil? || @volume.tags == ''
-
+      info "Snapshot complete."
+      unless @volume.tags.nil? || @volume.tags == ''
+        info "Tagging snapshot."
+        snapshot.create_tags({
+                                 dry_run: true,
+                                 tags: @volume.tags
+                             })
+      end
+      info "Creating new volume in #{@instance_az}"
       new_volume = @resource.create_volume({
                                     snapshot_id: snapshot.id,
                                     availability_zone: @instance_az,
                                     volume_type: 'gp2'
                                   })
       @resource.client.wait_until(:volume_available, {volume_ids: [new_volume.id]})
-      new_volume.create_tags({
-                                 dry_run: true,
-                                 tags: @volume.tags
-                             }) unless @volume.tags.nil? || @volume.tags == ''
+      info "New volume created: #{new_volume.id}"
+      unless @volume.tags.nil? || @volume.tags == ''
+        info "Tagging volume."
+        new_volume.create_tags({
+                                   dry_run: true,
+                                   tags: @volume.tags
+                               })
+      end
+      info "Deleting old volume: #{@volume.id}"
       @volume.delete
       @resource.client.wait_until(:volume_deleted, {volume_ids: [@volume.id]})
+      info "Volume deleted."
       @volume = new_volume
+      info "Deleting snapshot: #{snapshot.id}"
       snapshot.delete
     end
   end
