@@ -15,13 +15,14 @@ class App
     AWSAttachVolume::Main.new(options).run
   end
 
-  options[:region] = 'us-east-1'
+  options[:move] = true
 
   # Proxy to an OptionParser instance's on method
   on("-r REGION", "--region")
   on("-v VOLUME_ID", "--volume_id", "Required")
   on("-i INSTANCE_ID","--instance_id", "Required")
   on("-d DEVICE", "--device")
+  on("-m", "--move", "Snapshot and Restore if volume is in different AZ")
 
   use_log_level_option
 
