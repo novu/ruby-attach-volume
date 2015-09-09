@@ -1,6 +1,6 @@
 # AWSAttachVolume
 
-Use this gem to attach an existing volume to an instance.  It will verify the volume is in the available state and the same region before attaching.  Instance will need IAM permissions to describe the volume and attach the volume.
+Use this gem to attach an existing volume to an instance.  It will verify the volume is in the available state and the same region before attaching.  Instance will need IAM permissions to describe the volume and attach the volume.  If using move, the instance will also need to describe snapshots, create & delete both volumes and snapshots.  Recommended to use conditionals to lock this access down using tags or another ec2 key.
 
 ## Installation
 
@@ -25,10 +25,12 @@ Usage: awsattachvolume [options]
 
 Options:
     -h, --help                       Show command line help
-    -r, --region REGION              (default: us-east-1)
-    -v, --volume_id VOLUME_ID
-    -i, --instance_id INSTANCE_ID
+    -r, --region REGION
+    -v, --volume_id VOLUME_ID        Required
+    -i, --instance_id INSTANCE_ID    Required
     -d, --device DEVICE
+    -m, --move                       Snapshot, restore, and delete old volume + snapshot if volume is in different AZ. Copies over tags as well
+                                     (default: true)
         --log-level LEVEL            Set the logging level
                                      (debug|info|warn|error|fatal)
                                      (Default: info)

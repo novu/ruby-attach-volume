@@ -22,7 +22,7 @@ class App
   on("-v VOLUME_ID", "--volume_id", "Required")
   on("-i INSTANCE_ID","--instance_id", "Required")
   on("-d DEVICE", "--device")
-  on("-m", "--move", "Snapshot and Restore if volume is in different AZ")
+  on("-m", "--move", "Snapshot, restore, and delete old volume + snapshot if volume is in different AZ. Copies over tags as well")
 
   use_log_level_option
 
