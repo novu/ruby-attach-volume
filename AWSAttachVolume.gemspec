@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["okeefferd@gmail.com"]
 
   spec.summary       = "Attaches volumes to running EC2 instances in AWS"
-  spec.homepage      = "http://www.github.com/novu/ruby-attach-volume"
+  spec.homepage      = "http://www.github.com/DanielRedOak/ruby-attach-volume"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
