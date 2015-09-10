@@ -35,6 +35,60 @@ Options:
                                      (debug|info|warn|error|fatal)
                                      (Default: info)
 ```
+#### Example IAM Policy
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeVolumes",
+        "ec2:DescribeSnapshots",
+        "ec2:CreateSnapshot",
+        "ec2:CreateVolume",
+        "ec2:CreateTags",
+        "ec2:DescribeTags"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AttachVolume",
+        "ec2:DetachVolume"
+      ],
+      "Resource": "arn:aws:ec2:REGION:ACCOUNT:instance/*",
+      "Condition": {
+        "StringEquals": {
+          "ec2:ResourceTag/KEY": "VALUE"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AttachVolume",
+        "ec2:DetachVolume",
+        "ec2:DeleteVolume"
+      ],
+      "Resource": "arn:aws:ec2:REGION:ACCOUNT:volume/*",
+      "Condition": {
+        "StringEquals": {
+          "ec2:ResourceTag/KEY": "VALUE"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DeleteSnapshot"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
 
 ## Development
 
