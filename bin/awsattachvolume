@@ -8,7 +8,7 @@ class App
   include Methadone::CLILogging
   include Methadone::ExitNow
 
-  def validate_opts
+  def self.validate_opts
     if options[:volume_id] && options[:tags]
       help_now!("Only one of volume_id or tags can be specified!")
     end
@@ -21,7 +21,7 @@ class App
   end
 
   main do |action|
-    validate_opts
+    App.validate_opts
     AWSAttachVolume::Main.new(options).run
   end
 
@@ -33,7 +33,7 @@ class App
   on("-i INSTANCE_ID","--instance_id", "Required")
   on("-d DEVICE", "--device")
   on("-m", "--move", "Snapshot, restore, and delete old volume + snapshot if volume is in different AZ. Copies over tags as well")
-  on("-t TAGS", "--tags", "Hash of tags to use to find the volume. Only one of volume_id or tags can be used.")
+  on("-t TAGS", "--tags", "JSON of tags to use to find the volume. Only one of volume_id or tags can be used.")
 
   use_log_level_option
 

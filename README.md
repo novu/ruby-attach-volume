@@ -26,11 +26,12 @@ Usage: awsattachvolume [options]
 Options:
     -h, --help                       Show command line help
     -r, --region REGION
-    -v, --volume_id VOLUME_ID        Required
+    -v, --volume_id VOLUME_ID        Required.  Only one of volume_id or tags can be used.
     -i, --instance_id INSTANCE_ID    Required
     -d, --device DEVICE
     -m, --move                       Snapshot, restore, and delete old volume + snapshot if volume is in different AZ. Copies over tags as well
                                      (default: true)
+    -t, --tags TAGS                  JSON of tags to use to find the volume. Only one of volume_id or tags can be used.
         --log-level LEVEL            Set the logging level
                                      (debug|info|warn|error|fatal)
                                      (Default: info)

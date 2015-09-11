@@ -13,7 +13,7 @@ module AWSAttachVolume
       @instance_id = options[:instance_id]
       @device = options[:device]
       @move = options[:move]
-      @tags = options[:tags]
+      @tags = = JSON.parse(options[:tags])
 
       if @instance_id.nil? || @instance_id == ''
         @instance_id = instance_id
@@ -95,7 +95,7 @@ module AWSAttachVolume
       volumes = @resource.volumes({
                                     filters: tags
                                   })
-      debug "Found: #{volumes.inspect}"
+      debug "Found: #{volumes.inspect} with #{volumes.count} volumes"
       if volumes.nil? || volumes.count == 0
         fatal "Volume not found with tags: #{hash}"
         exit_now!(-1)
@@ -104,7 +104,7 @@ module AWSAttachVolume
         fatal "#{volumes.count} volumes found with tags: #{hash}"
         exit_now!(-1)
       end
-      @volume = volumes[0]
+      @volume = volumes.first
     end
 
     def move_volume()
