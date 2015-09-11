@@ -13,6 +13,7 @@ module AWSAttachVolume
       @instance_id = options[:instance_id]
       @device = options[:device]
       @move = options[:move]
+      @tags = options[:tags]
 
       if @instance_id.nil? || @instance_id == ''
         @instance_id = instance_id
@@ -22,7 +23,9 @@ module AWSAttachVolume
     end
 
     def run()
-
+      if @tags
+        find_by_tags
+      end
       need_move = true if @volume.availability_zone != @instance_az
 
       unless @volume.state == 'available'
@@ -78,6 +81,30 @@ module AWSAttachVolume
       hash.each do |k,v|
         tags << { key: k, value: v }
       end
+    end
+
+    def find_by_tags
+      hash = @tags
+      tags = []
+      debug "Building filter array from hash: #{hash}"
+      hash.each do |k,v|
+        tags << { name: "tag:#{k}", values: [v] }
+      end
+      debug "Filter array: #{tags}"
+      info "Searching for a matching volume: #{hash}"
+      volumes = @resource.volumes({
+                                    filters: tags
+                                  })
+      debug "Found: #{volumes.inspect}"
+      if volumes.nil? || volumes.count == 0
+        fatal "Volume not found with tags: #{hash}"
+        exit_now!(-1)
+      end
+      if volumes.count > 1
+        fatal "#{volumes.count} volumes found with tags: #{hash}"
+        exit_now!(-1)
+      end
+      @volume = volumes[0]
     end
 
     def move_volume()

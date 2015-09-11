@@ -8,10 +8,20 @@ class App
   include Methadone::CLILogging
   include Methadone::ExitNow
 
-  main do |action|
-    if options[:device].nil? || options[:volume_id].nil?
-      help_now!("Missing required argument!")
+  def validate_opts
+    if options[:volume_id] && options[:tags]
+      help_now!("Only one of volume_id or tags can be specified!")
     end
+    if options[:device].nil?
+      help_now!("device must be specified!")
+    end
+    if options[:volume_id].nil? && options[:tags].nil?
+      help_now!("One of volume_id or tags must be specified!")
+    end
+  end
+
+  main do |action|
+    validate_opts
     AWSAttachVolume::Main.new(options).run
   end
 
@@ -19,10 +29,11 @@ class App
 
   # Proxy to an OptionParser instance's on method
   on("-r REGION", "--region")
-  on("-v VOLUME_ID", "--volume_id", "Required")
+  on("-v VOLUME_ID", "--volume_id", "Required.  Only one of volume_id or tags can be used.")
   on("-i INSTANCE_ID","--instance_id", "Required")
   on("-d DEVICE", "--device")
   on("-m", "--move", "Snapshot, restore, and delete old volume + snapshot if volume is in different AZ. Copies over tags as well")
+  on("-t TAGS", "--tags", "Hash of tags to use to find the volume. Only one of volume_id or tags can be used.")
 
   use_log_level_option
 
