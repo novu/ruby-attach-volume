@@ -13,7 +13,7 @@ module AWSAttachVolume
       @instance_id = options[:instance_id]
       @device = options[:device]
       @move = options[:move]
-      @tags = JSON.parse(options[:tags])
+      @tags = JSON.parse(options[:tags]) unless options[:tags].nil?
 
       if @instance_id.nil? || @instance_id == ''
         @instance_id = instance_id
