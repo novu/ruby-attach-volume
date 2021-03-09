@@ -19,7 +19,7 @@ GEM
     methadone (1.9.1)
       bundler
     multi_json (1.11.2)
-    rake (10.4.2)
+    rake (13.0.3)
 
 PLATFORMS
   ruby
@@ -27,7 +27,7 @@ PLATFORMS
 DEPENDENCIES
   AWSAttachVolume!
   bundler (~> 1.10)
-  rake (~> 10.0)
+  rake (~> 13.0)
 
 BUNDLED WITH
    1.10.3
